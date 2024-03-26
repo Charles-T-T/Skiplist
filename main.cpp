@@ -12,6 +12,8 @@ int main(){
         insert_search
     } mood;
 
+    mood = insert_search;
+
     switch (mood)
     {
     case insert_search:
@@ -21,6 +23,9 @@ int main(){
     default:
         break;
     }
+
+    std::cout << "Test over, exiting..." << std::endl;
+    return 0;
 }
 
 template<typename kType, typename vType>
