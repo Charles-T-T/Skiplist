@@ -6,8 +6,11 @@
 #include <algorithm>
 #include <string>
 #include <stdio.h>
+#include <sstream>
 
-// Ìø±í½ÚµãµÄÊµÏÖ
+#pragma once
+
+// è·³è¡¨èŠ‚ç‚¹çš„å®ç°
 template <typename kType, typename vType>
 class Node
 {
@@ -21,22 +24,22 @@ public:
     ~Node();
     int nodeLevel;
 
-    kType getKey() const;
-    vType getValue() const;
-    void setValue(vType);
+    kType GetKey() const;
+    vType GetValue() const;
+    void SetValue(vType);
 
-    Node<kType, vType> **forward; // ÓÃ¶şÎ¬Ö¸ÕëÊµÏÖÌø±íµÄËÑË÷
+    Node<kType, vType> **forward; // ç”¨äºŒç»´æŒ‡é’ˆå®ç°è·³è¡¨çš„æœç´¢
 };
 
-// Node³ÉÔ±º¯Êı¶¨Òå
+// Nodeæˆå‘˜å‡½æ•°å®šä¹‰
 template <typename kType, typename vType>
 Node<kType, vType>::Node(const kType k, const vType v, int level)
 {
     this->key = k;
     this->value = v;
     this->nodeLevel = level;
-    this->forward = new Node<kType, vType> *[level + 1];                  // level´Ó0ËãÆğ
-    memset(this->forward, 0, sizeof(Node<kType, vType> *) * (level + 1)); // ½«ËùÓĞÖ¸Õë³õÊ¼»¯
+    this->forward = new Node<kType, vType> *[level + 1];                  // levelä»0ç®—èµ·
+    memset(this->forward, 0, sizeof(Node<kType, vType> *) * (level + 1)); // å°†æ‰€æœ‰æŒ‡é’ˆåˆå§‹åŒ–
 }
 
 template <typename kType, typename vType>
@@ -46,48 +49,48 @@ Node<kType, vType>::~Node()
 }
 
 template <typename kType, typename vType>
-kType Node<kType, vType>::getKey() const
+kType Node<kType, vType>::GetKey() const
 {
     return key;
 }
 
 template <typename kType, typename vType>
-vType Node<kType, vType>::getValue() const
+vType Node<kType, vType>::GetValue() const
 {
     return value;
 }
 
 template <typename kType, typename vType>
-void Node<kType, vType>::setValue(vType v)
+void Node<kType, vType>::SetValue(vType v)
 {
     this->value = v;
 }
 
-// Ìø±í½á¹¹µÄÊµÏÖ
+// è·³è¡¨ç»“æ„çš„å®ç°
 template <typename kType, typename vType>
 class Skiplist
 {
 public:
-    Skiplist(int);                                    // ¹¹Ôìº¯Êı
-    ~Skiplist();                                      // Îö¹¹º¯Êı
-    Node<kType, vType> *CreatNode(kType, vType, int); // ´´½¨ĞÂ½Úµã
-    int GetRandLevel();                               // »ñÈ¡ĞÂ½ÚµãµÄ²ã¼¶£¨Ëæ»ú£©
-    int InsertNode(kType, vType);                     // ²åÈëĞÂ½Úµã
-    void ShowList();                                  // Õ¹Ê¾µ±Ç°Ìø±íÇé¿ö
-    bool SearchNode(kType);                           // ²éÕÒ½Úµã
-    void DeleteNode(kType);                           // É¾³ı½Úµã
-    void DumpFile();                                  // Êı¾İ³Ö¾Ã»¯µ½ÎÄ¼ş
-    void LoadFile();                                  // ´ÓÎÄ¼ş¶ÁÈ¡Êı¾İ
-    void Clear(Node<kType, vType> *);                 // µİ¹éµØÇå³ı½Úµã
-    int CountNode();                                  // µ±Ç°Ìø±í½Úµã¸öÊı
+    Skiplist(int);                                    // æ„é€ å‡½æ•°
+    // ~Skiplist();                                      // ææ„å‡½æ•°
+    Node<kType, vType> *CreatNode(kType, vType, int); // åˆ›å»ºæ–°èŠ‚ç‚¹
+    int GetRandLevel();                               // è·å–æ–°èŠ‚ç‚¹çš„å±‚çº§ï¼ˆéšæœºï¼‰
+    int InsertNode(kType, vType);                     // æ’å…¥æ–°èŠ‚ç‚¹
+    void ShowList();                                  // å±•ç¤ºå½“å‰è·³è¡¨æƒ…å†µ
+    bool SearchNode(kType);                           // æŸ¥æ‰¾èŠ‚ç‚¹
+    void DeleteNode(kType);                           // åˆ é™¤èŠ‚ç‚¹
+    void DumpFile();                                  // æ•°æ®æŒä¹…åŒ–åˆ°æ–‡ä»¶
+    void LoadFile();                                  // ä»æ–‡ä»¶è¯»å–æ•°æ®
+    void Clear(Node<kType, vType> *);                 // é€’å½’åœ°æ¸…é™¤èŠ‚ç‚¹
+    int CountNode();                                  // å½“å‰è·³è¡¨èŠ‚ç‚¹ä¸ªæ•°
 
 private:
-    int _maxLevel;               // Ìø±íÔÊĞíÔö³¤µ½µ×µÄ×î´ó²ãÊı
-    int _listLevel;              // Ìø±íµ±Ç°¾ßÓĞµÄ²ãÊı
-    int _elemCount;              // Ìø±íÖĞËùÓĞÔªËØµÄÊıÁ¿
-    Node<kType, vType> *_header; // Ìø±íÍ·½Úµã
-    std::ofstream _fileWriter;   // ÎÄ¼şĞ´ÈëÆ÷
-    std::ifstream _fileReader;   // ÎÄ¼ş¶ÁÈ¡Æ÷
+    int _maxLevel;               // è·³è¡¨å…è®¸å¢é•¿åˆ°åº•çš„æœ€å¤§å±‚æ•°
+    int _listLevel;              // è·³è¡¨å½“å‰å…·æœ‰çš„å±‚æ•°
+    int _elemCount;              // è·³è¡¨ä¸­æ‰€æœ‰å…ƒç´ çš„æ•°é‡
+    Node<kType, vType> *_header; // è·³è¡¨å¤´èŠ‚ç‚¹
+    std::ofstream _fileWriter;   // æ–‡ä»¶å†™å…¥å™¨
+    std::ifstream _fileReader;   // æ–‡ä»¶è¯»å–å™¨
 };
 
 template <typename kType, typename vType>
@@ -108,17 +111,17 @@ int Skiplist<kType, vType>::GetRandLevel()
     while (rand() % 2)
     {
         level++;
-    } // ²ÉÓÃËæ»úÊıÈ·¶¨²ã¼¶£¬½Úµã¹»¶àÊ±¸ßĞ§
+    } // é‡‡ç”¨éšæœºæ•°ç¡®å®šå±‚çº§ï¼ŒèŠ‚ç‚¹å¤Ÿå¤šæ—¶é«˜æ•ˆ
 
     return std::max(level, _maxLevel);
 }
 
 template <typename kType, typename vType>
-Node<kType, vType>* Skiplist<kType, vType>::CreatNode(const kType k, const vType v, int rdLevel){
+Node<kType, vType> *Skiplist<kType, vType>::CreatNode(const kType k, const vType v, int rdLevel)
+{
     Node<kType, vType> *n = new Node(k, v, rdLevel);
     return n;
 }
-
 
 template <typename kType, typename vType>
 bool Skiplist<kType, vType>::SearchNode(kType key)
@@ -126,12 +129,12 @@ bool Skiplist<kType, vType>::SearchNode(kType key)
     Node<kType, vType> *current = _header;
     for (int i = _listLevel; i >= 0; i--)
     {
-        // ´Ó¶¥²ãÍùÏÂ²é
-        while (current->forward[i] && current->forward[i]->getKey() < key) // ²ãÄÚÖğ¸ö²éÖ±µ½ÏÂÒ»¸ö¾Í´óÓÚkey
+        // ä»é¡¶å±‚å¾€ä¸‹æŸ¥
+        while (current->forward[i] && current->forward[i]->GetKey() < key) // å±‚å†…é€ä¸ªæŸ¥ç›´åˆ°ä¸‹ä¸€ä¸ªå°±å¤§äºkey
             current = current->forward[i];
-        // TODO ¸Ğ¾õ¿ÉÒÔÈ¥µô£¿
-        current = current->forward[0]; // ÔÚµ×²ã£¨×îÈ«£©²éÕÒÏÂÒ»¸öÖµ
-        if (current && current->getKey() == key)
+        // TODO æ„Ÿè§‰å¯ä»¥å»æ‰ï¼Ÿ
+        current = current->forward[0]; // åœ¨åº•å±‚ï¼ˆæœ€å…¨ï¼‰æŸ¥æ‰¾ä¸‹ä¸€ä¸ªå€¼
+        if (current && current->GetKey() == key)
             return true;
         else
             return false;
@@ -145,35 +148,35 @@ int Skiplist<kType, vType>::InsertNode(kType key, vType value)
     Node<kType, vType> *current = _header;
 
     /**
-     * ²ÉÓÃÖ¸ÕëÊı×éupdate´æ´¢´ı¸üĞÂµÄ½Úµã
-     * Ò²¾ÍÊÇÒª²åÈë½ÚµãµÄÇ°Çı½Úµã
-     * ¼´Ã¿²ãÖĞĞ¡ÓÚ´ı²åÈë½ÚµãµÄ×îºóÒ»¸ö½Úµã
+     * é‡‡ç”¨æŒ‡é’ˆæ•°ç»„updateå­˜å‚¨å¾…æ›´æ–°çš„èŠ‚ç‚¹
+     * ä¹Ÿå°±æ˜¯è¦æ’å…¥èŠ‚ç‚¹çš„å‰é©±èŠ‚ç‚¹
+     * å³æ¯å±‚ä¸­å°äºå¾…æ’å…¥èŠ‚ç‚¹çš„æœ€åä¸€ä¸ªèŠ‚ç‚¹
      */
-    Node<kType, vType> *update[_maxLevel + 1];                         // TODO ¿¼ÂÇ¸ÄÓÃ_listLevel?
-    memset(update, 0, sizeof(Node<kType, vType> *) * (_maxLevel + 1)); // Îªupdate[]·ÖÅä¿Õ¼ä¡¢³õÊ¼»¯
+    Node<kType, vType> *update[_maxLevel + 1];                         // TODO è€ƒè™‘æ”¹ç”¨_listLevel?
+    memset(update, 0, sizeof(Node<kType, vType> *) * (_maxLevel + 1)); // ä¸ºupdate[]åˆ†é…ç©ºé—´ã€åˆå§‹åŒ–
     for (int i = _listLevel; i >= 0; i--)
     {
-        while (current->forward[i] && current->forward[i]->getKey() < key)
+        while (current->forward[i] && current->forward[i]->GetKey() < key)
             current = current->forward[i];
         update[i] = current;
     }
 
     /**
-     * ¼ì²ékeyÊÇ·ñÒÑ¾­´æÔÚ
-     * Èô´æÔÚ£º¸üĞÂÆävalue£¬·µ»Ø0
-     * Èô²»´æÔÚ£º²åÈëĞÂ½Úµã£¬·µ»Ø1
+     * æ£€æŸ¥keyæ˜¯å¦å·²ç»å­˜åœ¨
+     * è‹¥å­˜åœ¨ï¼šæ›´æ–°å…¶valueï¼Œè¿”å›0
+     * è‹¥ä¸å­˜åœ¨ï¼šæ’å…¥æ–°èŠ‚ç‚¹ï¼Œè¿”å›1
      */
     current = current->forward[0];
-    if (current && current->getKey() == key)
+    if (current && current->GetKey() == key)
     {
-        // TODO Ô­´úÂëÃ»ÓĞ¸üĞÂ
-        current->setValue(value);
+        // TODO åŸä»£ç æ²¡æœ‰æ›´æ–°
+        current->SetValue(value);
         return 0;
     }
 
-    // TODO É¾³ıÔ­´úÂëÖĞËÆºõÃ»ÓĞÒâÒåµÄifÅĞ¶Ï
+    // TODO åˆ é™¤åŸä»£ç ä¸­ä¼¼ä¹æ²¡æœ‰æ„ä¹‰çš„ifåˆ¤æ–­
     int randLevel = GetRandLevel();
-    // Èç¹ûµÃµ½µÄĞÂËæ»ú²ãÊı > Ìø±íÏÖÓĞ²ãÊı£¬ĞèÒª¸øupdateÖĞĞÂÔö¼ÓµÄ²ãÌí¼ÓÍ·½Úµã
+    // å¦‚æœå¾—åˆ°çš„æ–°éšæœºå±‚æ•° > è·³è¡¨ç°æœ‰å±‚æ•°ï¼Œéœ€è¦ç»™updateä¸­æ–°å¢åŠ çš„å±‚æ·»åŠ å¤´èŠ‚ç‚¹
     if (randLevel > _listLevel)
     {
         for (int i = _listLevel + 1; i <= randLevel; i++)
@@ -181,8 +184,8 @@ int Skiplist<kType, vType>::InsertNode(kType key, vType value)
         _listLevel = randLevel;
     }
 
-    // ´Óµ×²ãµ½randLevel£¬ÔÚ¸÷²ã²åÈëĞÂ½Úµã
-    Node<kType, vType>* newNode = CreatNode(key, value, randLevel);
+    // ä»åº•å±‚åˆ°randLevelï¼Œåœ¨å„å±‚æ’å…¥æ–°èŠ‚ç‚¹
+    Node<kType, vType> *newNode = CreatNode(key, value, randLevel);
     for (int i = 0; i <= randLevel; i++)
     {
         newNode->forward[i] = update[i]->forward[i];
@@ -191,4 +194,42 @@ int Skiplist<kType, vType>::InsertNode(kType key, vType value)
 
     _elemCount++;
     return 1;
+}
+
+template <typename kType, typename vType>
+void Skiplist<kType, vType>::DeleteNode(kType key)
+{
+    Node<kType, vType> *current = this->_header;
+    Node<kType, vType> *update[_maxLevel + 1];
+    memset(update, 0, sizeof(Node<kType, vType> *) * (_maxLevel + 1));
+
+    // ä»é«˜å±‚å‘ä¸‹æœç´¢æ¯å±‚å¾…åˆ é™¤çš„èŠ‚ç‚¹
+    for (int i = _listLevel; i >= 0; i--)
+    {
+        while (current->forward[i] && current->forward[i]->GetKey() < key)
+        {
+            current = current->forward[i];
+        }
+        update[i] = current; // è®°å½•å¾…åˆ é™¤èŠ‚ç‚¹çš„å‰é©±
+    }
+
+    current = current->forward[0];
+    if (current && current->GetKey() == key)
+    {
+        // ä»é«˜å±‚å‘ä¸‹é€å±‚åˆ é™¤èŠ‚ç‚¹
+        for (int i = _listLevel; i >= 0; i--)
+        {
+            // TODO æ­¤å¤„ifåˆ¤æ–­æ˜¯åŸä»£ç çš„ï¼Œæ„Ÿè§‰æ²¡ç”¨ï¼Ÿ
+            if (update[i]->forward[i] != current)
+                break;
+            update[i]->forward[i] = current->forward[i];
+        }
+        // è°ƒæ•´è·³è¡¨çš„å½“å‰é«˜åº¦
+        if (_listLevel > 0 && _header->forward[_listLevel] == NULL)
+            _listLevel--;
+        // é‡Šæ”¾å†…å­˜
+        delete current;
+        _elemCount--;
+        // TODO è€ƒè™‘updateçš„å†…å­˜ä¹Ÿé‡Šæ”¾ï¼Ÿ
+    }
 }

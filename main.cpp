@@ -1,64 +1,43 @@
-#include "skiplist.h"
+#include "test.h"
 
-template <typename kType, typename vType>
-void InsertSearch(Skiplist<kType, vType>*);
-
-int main(){
-    Skiplist<int, std::string> *sl = new Skiplist<int, std::string>(16);
-
-    enum Mood
+int main()
+{
+    Skiplist<int, std::string> sl(16);
+    while (1)
     {
-        def_node_list,
-        insert_search
-    } mood;
+        // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 忽略输入缓冲区中的所有字符，直到换行符为止
 
-    mood = insert_search;
+        int choice = MenuChoose();
+        switch (choice)
+        {
+        case 0:
+            std::cout << "See you next time~" << std::endl;
+            return 0;
+            break;
 
-    switch (mood)
-    {
-    case insert_search:
-        InsertSearch(sl);
-        break;
-    
-    default:
-        break;
+        case 1:
+            Insert(sl);
+            std::cout << "**********************" << std::endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 2:
+            Delete(sl);
+            std::cout << "**********************" << std::endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 3:
+            Search(sl);
+            std::cout << "**********************" << std::endl;
+            system("pause");
+            system("cls");
+            break;
+        }
     }
 
     std::cout << "Test over, exiting..." << std::endl;
     return 0;
-}
-
-template<typename kType, typename vType>
-void InsertSearch(Skiplist<kType, vType>* sl){
-    int keyNum, seachNum;
-    std::cout << "please input the num of keys to be inserted: ";
-    std::cin >> keyNum;
-    std::cout << "please inputh the num of keys to be searched: ";
-    std::cin >> seachNum;
-    
-    // insert
-    for (int i = 0; i < keyNum; i++)
-    {
-        int key;
-        std::string value;
-        printf("k-v(%d): ", i);
-        std::cin >> key >> value;
-        if (sl->InsertNode(key, value))
-            std::cout << "Insert successfully!" << std::endl;
-        else
-            std::cout << "Key existed, its value updated successfully!" << std::endl;
-    }
-
-    // search
-    for (int i = 0; i < seachNum; i++)
-    {
-        int key;
-        std::cout << "please input the key to be searched: ";
-        std::cin >> key;
-        if (sl->SearchNode(key))
-            std::cout << "Search successfully!" << std::endl;
-        else
-            std::cout << "Search fail!" << std::endl;
-    }
-
 }
