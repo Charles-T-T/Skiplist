@@ -12,6 +12,12 @@ void Delete(Skiplist<kType, vType> &sl);
 template <typename kType, typename vType>
 void Search(Skiplist<kType, vType> &sl);
 
+template <typename kType, typename vType>
+void Display(Skiplist<kType, vType> &sl);
+
+template <typename kType, typename vType>
+void InsertSet(Skiplist<kType, vType> &sl);
+
 // 检测输入值是否为整数
 bool IsInt(std::string input)
 {
@@ -46,13 +52,15 @@ int MenuChoose(){
     std::cout << "1. Insert" << std::endl;
     std::cout << "2. Delete" << std::endl;
     std::cout << "3. Search" << std::endl;
+    std::cout << "4. Display" << std::endl;
+    std::cout << "5. Insert set" << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "---------------------" << std::endl;
-    std::cout << "Please choose a function(0-3): ";
+    std::cout << "Please choose a function(0-5): ";
 
     std::string choice;
     getline(std::cin, choice);
-    return LegalChoice(choice, 0, 3);
+    return LegalChoice(choice, 0, 5);
 }
 
 template <typename kType, typename vType>
@@ -98,4 +106,20 @@ void Search(Skiplist<kType, vType> &sl)
         std::cout << "Search Success!" << std::endl;
     else
         std::cout << "Search Fail!" << std::endl;
+}
+
+template <typename kType, typename vType>
+void Display(Skiplist<kType, vType> &sl){
+    sl.DisplayList();
+}
+
+template <typename kType, typename vType>
+void InsertSet(Skiplist<kType, vType> &sl){
+    for (int i = 0; i < 50; i++)
+    {
+        std::cout << "insert node[" << i << "]" << std::endl;
+        std::string str = "msg" + std::to_string(i);
+        sl.InsertNode(i, str);
+    }
+    std::cout << "Insert over!" << std::endl;
 }

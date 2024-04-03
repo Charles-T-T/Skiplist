@@ -5,8 +5,6 @@ int main()
     Skiplist<int, std::string> sl(16);
     while (1)
     {
-        // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 忽略输入缓冲区中的所有字符，直到换行符为止
-
         int choice = MenuChoose();
         switch (choice)
         {
@@ -31,6 +29,20 @@ int main()
 
         case 3:
             Search(sl);
+            std::cout << "**********************" << std::endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 4:
+            Display(sl);
+            std::cout << "**********************" << std::endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 5:
+            InsertSet(sl);
             std::cout << "**********************" << std::endl;
             system("pause");
             system("cls");

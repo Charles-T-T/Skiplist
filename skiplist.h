@@ -7,12 +7,14 @@
 #include <string>
 #include <stdio.h>
 #include <sstream>
+#include <random>
 
 #pragma once
 
 // 跳表节点的实现
 template <typename kType, typename vType>
-class Node
+class
+    Node
 {
 private:
     kType key;
@@ -71,12 +73,12 @@ template <typename kType, typename vType>
 class Skiplist
 {
 public:
-    Skiplist(int);                                    // 构造函数
+    Skiplist(int); // 构造函数
     // ~Skiplist();                                      // 析构函数
     Node<kType, vType> *CreatNode(kType, vType, int); // 创建新节点
     int GetRandLevel();                               // 获取新节点的层级（随机）
     int InsertNode(kType, vType);                     // 插入新节点
-    void ShowList();                                  // 展示当前跳表情况
+    void DisplayList();                               // 展示当前跳表情况
     bool SearchNode(kType);                           // 查找节点
     void DeleteNode(kType);                           // 删除节点
     void DumpFile();                                  // 数据持久化到文件
@@ -108,12 +110,15 @@ template <typename kType, typename vType>
 int Skiplist<kType, vType>::GetRandLevel()
 {
     int level = 0;
-    while (rand() % 2)
-    {
-        level++;
-    } // 采用随机数确定层级，节点够多时高效
 
-    return std::max(level, _maxLevel);
+    // 利用随机数决定新节点的层级，保证了节点被分配到越高层的概率越小
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 10);
+    while (dis(gen) % 2)
+        level++;
+        
+    return std::min(level, _maxLevel);
 }
 
 template <typename kType, typename vType>
@@ -130,16 +135,14 @@ bool Skiplist<kType, vType>::SearchNode(kType key)
     for (int i = _listLevel; i >= 0; i--)
     {
         // 从顶层往下查
-        while (current->forward[i] && current->forward[i]->GetKey() < key) // 层内逐个查直到下一个就大于key
+        while (current->forward[i] && current->forward[i]->GetKey() < key) // 层内逐个查直到下一个节点的键就不小于key
             current = current->forward[i];
-        // TODO 感觉可以去掉？
-        current = current->forward[0]; // 在底层（最全）查找下一个值
-        if (current && current->GetKey() == key)
-            return true;
-        else
-            return false;
     }
-    return false;
+    current = current->forward[0]; // 在底层查找下一个值（目标）
+    if (current && current->GetKey() == key)
+        return true;
+    else
+        return false;
 }
 
 template <typename kType, typename vType>
@@ -232,4 +235,24 @@ void Skiplist<kType, vType>::DeleteNode(kType key)
         _elemCount--;
         // TODO 考虑update的内存也释放？
     }
+}
+
+template <typename kType, typename vType>
+void Skiplist<kType, vType>::DisplayList()
+{
+    // 从顶层向下逐层展示kv
+    std::cout << "------------------------------" << std::endl;
+    for (int i = _listLevel; i >= 0; i--)
+    {
+        Node<kType, vType> *curNode = _header->forward[i];
+        printf("Level[%d]: ", i);
+        while (curNode)
+
+        {
+            std::cout << "<" << curNode->GetKey() << ":" << curNode->GetValue() << "> ";
+            curNode = curNode->forward[i];
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "------------------------------" << std::endl;
 }
