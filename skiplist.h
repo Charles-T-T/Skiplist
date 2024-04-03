@@ -117,7 +117,7 @@ int Skiplist<kType, vType>::GetRandLevel()
     std::uniform_int_distribution<> dis(1, 10);
     while (dis(gen) % 2)
         level++;
-        
+
     return std::min(level, _maxLevel);
 }
 
@@ -224,11 +224,11 @@ void Skiplist<kType, vType>::DeleteNode(kType key)
         {
             // TODO 此处if判断是原代码的，感觉没用？
             if (update[i]->forward[i] != current)
-                break;
+                continue;
             update[i]->forward[i] = current->forward[i];
         }
         // 调整跳表的当前高度
-        if (_listLevel > 0 && _header->forward[_listLevel] == NULL)
+        while (_listLevel > 0 && _header->forward[_listLevel] == NULL)
             _listLevel--;
         // 释放内存
         delete current;
