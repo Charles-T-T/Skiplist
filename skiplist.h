@@ -88,6 +88,9 @@ public:
     std::string writePath;                            // 写入文件地址
     std::string readPath;                             // 载入文件地址
 
+    bool IsValidKV(const std::string &str); // 检验一组kv字符串是否合法
+    void GetKVfromStr(const std::string &str, std::string *key, std::string *value); // 从字符串中解析出key和value
+
 private:
     int _maxLevel;               // 跳表允许增长到底的最大层数
     int _listLevel;              // 跳表当前具有的层数
@@ -142,9 +145,15 @@ bool Skiplist<kType, vType>::SearchNode(kType key)
     }
     current = current->forward[0]; // 在底层查找下一个值（目标）
     if (current && current->GetKey() == key)
+    {
+        std::cout << "Its value: " << current->GetValue() << std::endl;
         return true;
+    }
     else
+    {
+        std::cout << "Oops, this key does not exit!" << std::endl;
         return false;
+    }
 }
 
 template <typename kType, typename vType>
@@ -283,12 +292,14 @@ void Skiplist<kType, vType>::DumpFile()
     _fileWriter.close(); // 关闭文件
 }
 
-bool IsValidKV(const std::string &str)
+template <typename kType, typename vType>
+bool Skiplist<kType, vType>::IsValidKV(const std::string &str)
 {
     return !str.empty() && str.find(':') != std::string::npos;
 }
 
-void GetKVfromStr(const std::string &str, std::string *key, std::string *value)
+template <typename kType, typename vType>
+void Skiplist<kType, vType>::GetKVfromStr(const std::string &str, std::string *key, std::string *value)
 {
     if (!IsValidKV(str))
         return;

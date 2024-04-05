@@ -111,6 +111,7 @@ void Search(Skiplist<kType, vType> &sl)
     std::cout << "please input the key to be searched: ";
     getline(std::cin, input);
     if (sl.SearchNode(stoi(input)))
+    
         std::cout << "Search Success!" << std::endl;
     else
         std::cout << "Search Fail!" << std::endl;
