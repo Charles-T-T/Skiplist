@@ -47,6 +47,20 @@ int main()
             system("pause");
             system("cls");
             break;
+
+        case 6:
+            DumpFile(sl);
+            std::cout << "**********************" << std::endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 7:
+            LoadFile(sl);
+            std::cout << "**********************" << std::endl;
+            system("pause");
+            system("cls");
+            break;
         }
     }
 

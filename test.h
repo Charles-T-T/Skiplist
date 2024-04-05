@@ -18,6 +18,12 @@ void Display(Skiplist<kType, vType> &sl);
 template <typename kType, typename vType>
 void InsertSet(Skiplist<kType, vType> &sl);
 
+template <typename kType, typename vType>
+void DumpFile(Skiplist<kType, vType> &sl);
+
+template <typename kType, typename vType>
+void LoadFile(Skiplist<kType, vType> &sl);
+
 // 检测输入值是否为整数
 bool IsInt(std::string input)
 {
@@ -54,13 +60,15 @@ int MenuChoose(){
     std::cout << "3. Search" << std::endl;
     std::cout << "4. Display" << std::endl;
     std::cout << "5. Insert set" << std::endl;
+    std::cout << "6. Dump file" << std::endl;
+    std::cout << "7. Load file" << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "---------------------" << std::endl;
-    std::cout << "Please choose a function(0-5): ";
+    std::cout << "Please choose a function(0-7): ";
 
     std::string choice;
     getline(std::cin, choice);
-    return LegalChoice(choice, 0, 5);
+    return LegalChoice(choice, 0, 7);
 }
 
 template <typename kType, typename vType>
@@ -122,4 +130,14 @@ void InsertSet(Skiplist<kType, vType> &sl){
         sl.InsertNode(i, str);
     }
     std::cout << "Insert over!" << std::endl;
+}
+
+template <typename kType, typename vType>
+void DumpFile(Skiplist<kType, vType> &sl){
+    sl.DumpFile();
+}
+
+template <typename kType, typename vType>
+void LoadFile(Skiplist<kType, vType> &sl){
+    sl.LoadFile();
 }

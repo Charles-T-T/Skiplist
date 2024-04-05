@@ -85,6 +85,8 @@ public:
     void LoadFile();                                  // 从文件读取数据
     void Clear(Node<kType, vType> *);                 // 递归地清除节点
     int CountNode();                                  // 当前跳表节点个数
+    std::string writePath;                            // 写入文件地址
+    std::string readPath;                             // 载入文件地址
 
 private:
     int _maxLevel;               // 跳表允许增长到底的最大层数
@@ -222,14 +224,16 @@ void Skiplist<kType, vType>::DeleteNode(kType key)
         // 从高层向下逐层删除节点
         for (int i = _listLevel; i >= 0; i--)
         {
-            // TODO 此处if判断是原代码的，感觉没用？
+            // TODO 此处if判断是原代码的，感觉没用？将break改为了continue方可继续运行
             if (update[i]->forward[i] != current)
                 continue;
             update[i]->forward[i] = current->forward[i];
         }
+
         // 调整跳表的当前高度
         while (_listLevel > 0 && _header->forward[_listLevel] == NULL)
             _listLevel--;
+
         // 释放内存
         delete current;
         _elemCount--;
@@ -255,4 +259,69 @@ void Skiplist<kType, vType>::DisplayList()
         std::cout << std::endl;
     }
     std::cout << "------------------------------" << std::endl;
+}
+
+template <typename kType, typename vType>
+void Skiplist<kType, vType>::DumpFile()
+{
+    _fileWriter.open(writePath);
+    while (!_fileWriter.is_open())
+    {
+        std::cout << "Invalid file path, please input another one: ";
+        std::getline(std::cin, writePath);
+        _fileWriter.open(writePath);
+    }
+
+    // 遍历底层节点并写入文件
+    Node<kType, vType> *node = _header->forward[0];
+    while (node)
+    {
+        _fileWriter << node->GetKey() << ":" << node->GetValue() << "\n";
+        node = node->forward[0];
+    }
+    _fileWriter.flush(); // 刷新缓冲区确保数据全部写入
+    _fileWriter.close(); // 关闭文件
+}
+
+bool IsValidKV(const std::string &str)
+{
+    return !str.empty() && str.find(':') != std::string::npos;
+}
+
+void GetKVfromStr(const std::string &str, std::string *key, std::string *value)
+{
+    if (!IsValidKV(str))
+        return;
+
+    *key = str.substr(0, str.find(':'));
+    *value = str.substr(str.find(':') + 1);
+}
+
+template <typename kType, typename vType>
+void Skiplist<kType, vType>::LoadFile()
+{
+    _fileReader.open(readPath);
+    while (!_fileReader.is_open())
+    {
+        std::cout << "Invalid file path, please input another one: ";
+        getline(std::cin, readPath);
+        _fileReader.open(readPath);
+    }
+
+    std::cout << "start loading file..." << std::endl;
+    std::string line;
+    std::string *key = new std::string();
+    std::string *value = new std::string();
+    while (getline(_fileReader, line))
+    {
+        GetKVfromStr(line, key, value);
+        if (key->empty() || value->empty())
+            continue;
+        this->InsertNode(stoi(*key), *value);
+    }
+
+    delete key;
+    delete value;
+    _fileReader.close();
+    std::cout << "File loaded successfully!" << std::endl;
 }
