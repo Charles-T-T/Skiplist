@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "skiplist.h"
 
 int main()
 {
@@ -15,49 +16,49 @@ int main()
 
         case 1:
             Insert(sl);
-            std::cout << "**********************" << std::endl;
+            std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 2:
             Delete(sl);
-            std::cout << "**********************" << std::endl;
+            std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 3:
             Search(sl);
-            std::cout << "**********************" << std::endl;
+            std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 4:
             Display(sl);
-            std::cout << "**********************" << std::endl;
+            std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 5:
             InsertSet(sl);
-            std::cout << "**********************" << std::endl;
+            std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 6:
             DumpFile(sl);
-            std::cout << "**********************" << std::endl;
+            std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 7:
             LoadFile(sl);
-            std::cout << "**********************" << std::endl;
+            std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;

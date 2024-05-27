@@ -1,0 +1,14 @@
+[
+{
+  "directory": "C:/RUC/c++/Projects/Skiplist/charles/build",
+  "command": "C:\\Tools\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -o CMakeFiles\\main.dir\\src\\main.cpp.obj -c C:\\RUC\\c++\\Projects\\Skiplist\\charles\\src\\main.cpp",
+  "file": "C:/RUC/c++/Projects/Skiplist/charles/src/main.cpp",
+  "output": "CMakeFiles/main.dir/src/main.cpp.obj"
+},
+{
+  "directory": "C:/RUC/c++/Projects/Skiplist/charles/build",
+  "command": "C:\\Tools\\mingw64\\bin\\g++.exe  @CMakeFiles/stress_test.dir/includes_CXX.rsp -g -o CMakeFiles\\stress_test.dir\\stress-test\\stress-test.cpp.obj -c C:\\RUC\\c++\\Projects\\Skiplist\\charles\\stress-test\\stress-test.cpp",
+  "file": "C:/RUC/c++/Projects/Skiplist/charles/stress-test/stress-test.cpp",
+  "output": "CMakeFiles/stress_test.dir/stress-test/stress-test.cpp.obj"
+}
+]
