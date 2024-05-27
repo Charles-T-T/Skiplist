@@ -1,4 +1,6 @@
-#include <iostream>
+#pragma once
+
+#include "node.h"
 #include <cstring>
 #include <cmath>
 #include <cstdlib>
@@ -8,67 +10,11 @@
 #include <stdio.h>
 #include <sstream>
 #include <random>
+#include <mutex>
 
-#pragma once
+#define IS_STRESS_TEST 1
 
-// 跳表节点的实现
-template <typename kType, typename vType>
-class
-    Node
-{
-private:
-    kType key;
-    vType value;
 
-public:
-    Node() {}
-    Node(kType k, vType v, int);
-    ~Node();
-    int nodeLevel;
-
-    kType GetKey() const;
-    vType GetValue() const;
-    void SetValue(vType);
-
-    Node<kType, vType> **forward; // 用二维指针实现跳表的搜索
-};
-
-// Node成员函数定义
-template <typename kType, typename vType>
-Node<kType, vType>::Node(const kType k, const vType v, int level)
-{
-    this->key = k;
-    this->value = v;
-    this->nodeLevel = level;
-    this->forward = new Node<kType, vType> *[level + 1];                  // level从0算起
-    memset(this->forward, 0, sizeof(Node<kType, vType> *) * (level + 1)); // 将所有指针初始化
-}
-
-template <typename kType, typename vType>
-Node<kType, vType>::~Node()
-{
-    delete[] forward;
-}
-
-template <typename kType, typename vType>
-kType Node<kType, vType>::GetKey() const
-{
-    return key;
-}
-
-template <typename kType, typename vType>
-vType Node<kType, vType>::GetValue() const
-{
-    return value;
-}
-
-template <typename kType, typename vType>
-void Node<kType, vType>::SetValue(vType v)
-{
-    this->value = v;
-}
-
-// 跳表结构的实现
 template <typename kType, typename vType>
 class Skiplist
 {
@@ -83,12 +29,12 @@ public:
     void DeleteNode(kType);                           // 删除节点
     void DumpFile();                                  // 数据持久化到文件
     void LoadFile();                                  // 从文件读取数据
-    void Clear(Node<kType, vType> *);                 // 递归地清除节点
-    int CountNode();                                  // 当前跳表节点个数
+    // void Clear(Node<kType, vType> *);                 // 递归地清除节点
+    // int CountNode();                                  // 当前跳表节点个数
     std::string writePath;                            // 写入文件地址
     std::string readPath;                             // 载入文件地址
 
-    bool IsValidKV(const std::string &str); // 检验一组kv字符串是否合法
+    bool IsValidKV(const std::string &str);                                          // 检验一组kv字符串是否合法
     void GetKVfromStr(const std::string &str, std::string *key, std::string *value); // 从字符串中解析出key和value
 
 private:
@@ -98,6 +44,7 @@ private:
     Node<kType, vType> *_header; // 跳表头节点
     std::ofstream _fileWriter;   // 文件写入器
     std::ifstream _fileReader;   // 文件读取器
+    std::mutex _mutex;
 };
 
 template <typename kType, typename vType>
@@ -146,11 +93,13 @@ bool Skiplist<kType, vType>::SearchNode(kType key)
     current = current->forward[0]; // 在底层查找下一个值（目标）
     if (current && current->GetKey() == key)
     {
-        std::cout << "Its value: " << current->GetValue() << std::endl;
+        if (!IS_STRESS_TEST)
+            std::cout << "Its value: " << current->GetValue() << std::endl;
         return true;
     }
     else
     {
+        std::cout << "Oops, this key does not exit!" << std::endl;
         std::cout << "Oops, this key does not exit!" << std::endl;
         return false;
     }
@@ -159,6 +108,8 @@ bool Skiplist<kType, vType>::SearchNode(kType key)
 template <typename kType, typename vType>
 int Skiplist<kType, vType>::InsertNode(kType key, vType value)
 {
+    std::lock_guard<std::mutex> lock(_mutex); // 使用互斥锁保护共享资源
+
     Node<kType, vType> *current = _header;
 
     /**

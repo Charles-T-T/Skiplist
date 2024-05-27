@@ -1,3 +1,5 @@
-.vscode
-main.exe
-test
+.vscode/
+script/
+build/
+
+*.exe

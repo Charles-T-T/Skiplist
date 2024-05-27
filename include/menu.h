@@ -1,3 +1,5 @@
+#pragma once
+
 #include "skiplist.h"
 
 int LegalChoice(std::string choice, int low, int high);
@@ -51,19 +53,23 @@ int LegalChoice(std::string choice, int low, int high)
 int MenuChoose(){
     system("cls");
 
-    std::cout << "---------------------" << std::endl;
-    std::cout << "         MENU" << std::endl;
-    std::cout << "key-int, value-string" << std::endl;
-    std::cout << "---------------------" << std::endl;
+    std::cout << "-----------------------------" << std::endl;
+    std::cout << "            MENU             " << std::endl;
+    std::cout << "-----------------------------" << std::endl;
+    std::cout << "- ATTENTION: " << std::endl;
+    std::cout << "- in this demo, please use" << std::endl;
+    std::cout << "- 'int' as key " << std::endl;
+    std::cout << "- 'string' as value" << std::endl;
+    std::cout << "-----------------------------" << std::endl;
     std::cout << "1. Insert" << std::endl;
     std::cout << "2. Delete" << std::endl;
     std::cout << "3. Search" << std::endl;
     std::cout << "4. Display" << std::endl;
-    std::cout << "5. Insert set" << std::endl;
+    std::cout << "5. Insert sample KV set" << std::endl;
     std::cout << "6. Dump file" << std::endl;
     std::cout << "7. Load file" << std::endl;
     std::cout << "0. Exit" << std::endl;
-    std::cout << "---------------------" << std::endl;
+    std::cout << "-----------------------------" << std::endl;
     std::cout << "Please choose a function(0-7): ";
 
     std::string choice;
