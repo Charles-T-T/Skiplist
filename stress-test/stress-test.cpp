@@ -1,13 +1,16 @@
 #include "skiplist.h"
 #include <chrono>
-#include <pthread.h>
-#include <time.h>
-#include <cstdint>
+#include <thread>
+#include <vector>
+#include <random>
+#include <iostream>
 
-#define THREAD_COUNT 4      // 支持的线程数量
-#define TEST_COUNT 1000000 // 测试用例的数量
+constexpr int THREAD_COUNT = 8;     // 支持的线程数量
+constexpr int TEST_COUNT = 1000000; // 测试用例的数量
+constexpr int MAX_LEVEL = 20;       // 跳表可支持的最大层数
+constexpr int MULTI_INSERT = 0;     // 是否采用多线程插入跳表
 
-Skiplist<int, std::string> sl(18);                                                    // 创建最大可支持层数为18的跳表
+Skiplist<int, std::string> sl(MAX_LEVEL); // 创建<int, string>跳表
 
 int GetRandNum(std::mt19937 &gen)
 {
@@ -16,77 +19,73 @@ int GetRandNum(std::mt19937 &gen)
 }
 
 // 执行插入节点的线程函数
-void *InsertNodeFunc(void *threadID)
+void InsertNodeFunc(int tid)
 {
     unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count(); // 初始化随机数种子
     std::mt19937 gen(seed);
-    intptr_t tid; // 线程ID
-    tid = reinterpret_cast<intptr_t>(threadID);
-    // printf("thread[%ld] starts inserting...\n", tid);
+
     int nodeCount = TEST_COUNT / THREAD_COUNT; // 每个线程需要插入的节点数量
     int start = nodeCount * tid;
     int end = nodeCount * (tid + 1);
     for (int i = start; i < end; i++)
     {
-        sl.InsertNode(i, "test" + std::to_string(i));
+        sl.InsertNode(GetRandNum(gen), "test" + std::to_string(GetRandNum(gen)));
     }
-    pthread_exit(NULL);
 }
 
-void *SearchNodeFunc(void *threadID)
+// 执行搜索节点的线程函数
+void SearchNodeFunc(int tid)
 {
     unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count(); // 初始化随机数种子
     std::mt19937 gen(seed);
-    intptr_t tid; // 线程ID
-    tid = reinterpret_cast<intptr_t>(threadID);
-    // printf("thread[%ld] starts searching...\n", tid);
+
     int nodeCount = TEST_COUNT / THREAD_COUNT;
     int start = nodeCount * tid;
     int end = nodeCount * (tid + 1);
     for (int i = start; i < end; i++)
     {
-        sl.SearchNode(gen());
+        sl.SearchNode(GetRandNum(gen));
     }
-    pthread_exit(NULL);
 }
 
 int main()
 {
-    // TODO 改为更好的随机数
-    srand(time(NULL));                                    // 初始化随机数种子
-    // TODO 改为更好的随机数
-    srand(time(NULL));                                    // 初始化随机数种子
     std::chrono::duration<double> insertTime, searchTime; // 插入、搜索压测用时
 
     // 插入节点压力测试
     {
-        pthread_t threads[THREAD_COUNT];
-        int rc; // 用于接收pthread_create的返回值
+        /**
+         * 测试发现多线程下，插入压测的QPS变化很小、甚至有所减小
+         * 原因应该是对同一个跳表频繁操作导致锁对性能的限制较大
+         * 故此处选择不采用多线程进行测试
+         */
         std::cout << "start testing node insertion..." << std::endl;
-        auto start = std::chrono::high_resolution_clock::now(); // 开始计时
+        auto start = std::chrono::high_resolution_clock::now();                               // 开始计时
+        unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count(); // 初始化随机数种子
+        std::mt19937 gen(seed);
 
-        // 创建插入节点的线程
-        for (int i = 0; i < THREAD_COUNT; i++)
+        if (MULTI_INSERT)
         {
-            printf("main()--creating thread[%d]\n", i);
-            rc = pthread_create(&threads[i], NULL, InsertNodeFunc, (void *)i);
-            if (rc)
+            // 创建插入节点的线程
+            std::vector<std::thread> threads;
+            for (int i = 0; i < THREAD_COUNT; i++)
             {
-                // TODO 考虑用perror等方法输出错误
-                std::cout << "Error: fail to create thread, " << rc << std::endl;
-                exit(-1); // 线程创建失败，退出测试
+                std::cout << "main()--creating thread[" << i << "]" << std::endl;
+                threads.emplace_back(InsertNodeFunc, i);
+            }
+
+            // 等待各个线程结束
+            for (auto &t : threads)
+            {
+                if (t.joinable())
+                    t.join();
             }
         }
-
-        void *rj; // 用于接收pthread_join的返回值
-
-        // 等待各个线程结束
-        for (int i = 0; i < THREAD_COUNT; i++)
+        else // 单线程插入
         {
-            if (pthread_join(threads[i], &rj))
+            for (int i = 0; i < TEST_COUNT; i++)
             {
-                perror("pthread_join() fail");
-                exit(3); // 等待线程结束失败，退出测试
+                sl.InsertNode(GetRandNum(gen), "test" + std::to_string(GetRandNum(gen)));
             }
         }
 
@@ -96,34 +95,22 @@ int main()
 
     // 搜索节点压力测试
     {
-        pthread_t threads[THREAD_COUNT];
-        int rc; // 用于接收pthread_create的返回值
-        std::cout << "\nstart testing node insertion..." << std::endl;
+        std::vector<std::thread> threads;
+        std::cout << "\nstart testing node search..." << std::endl;
         auto start = std::chrono::high_resolution_clock::now(); // 开始计时
 
         // 创建搜索节点的线程
         for (int i = 0; i < THREAD_COUNT; i++)
         {
-            printf("main()--creating thread[%d]\n", i);
-            rc = pthread_create(&threads[i], NULL, SearchNodeFunc, (void *)i);
-            if (rc)
-            {
-                // TODO 考虑用perror等方法输出错误
-                std::cout << "Error: fail to create thread, " << rc << std::endl;
-                exit(-1); // 线程创建失败，退出测试
-            }
+            std::cout << "main()--creating thread[" << i << "]" << std::endl;
+            threads.emplace_back(SearchNodeFunc, i);
         }
 
-        void *rj; // 用于接收pthread_join的返回值
-
         // 等待各个线程结束
-        for (int i = 0; i < THREAD_COUNT; i++)
+        for (auto &t : threads)
         {
-            if (pthread_join(threads[i], &rj))
-            {
-                perror("pthread_join() fail");
-                exit(3); // 等待线程结束失败，退出测试
-            }
+            if (t.joinable())
+                t.join();
         }
 
         auto finish = std::chrono::high_resolution_clock::now(); // 结束计时
@@ -133,9 +120,12 @@ int main()
     // 打印压测结果
     std::cout << "\n---------------RESULT---------------" << std::endl;
     std::cout << "Number of test cases: " << TEST_COUNT << std::endl;
+    std::cout << "Elements in Skiplist now: " << sl.CountNode() << std::endl;
     std::cout << "Insertion test elapsed: " << insertTime.count() << " s" << std::endl;
     std::cout << "Search test elapsed: " << searchTime.count() << " s" << std::endl;
-    pthread_exit(NULL);
-    pthread_exit(NULL);
+    sl.DumpFile();
+
+    std::cout << "Finish dumping file" << std::endl;
+
     return 0;
 }
