@@ -1,60 +1,27 @@
-#pragma once 
+#pragma once
 
 #include <iostream>
+#include <memory>
+#include <vector>
 
 // 跳表节点
-template <typename kType, typename vType>
+template <typename K, typename V>
 class Node
 {
 private:
-    kType key;
-    vType value;
-
-public:
-    Node() {}
-    Node(kType k, vType v, int);
-    ~Node();
+    K key;
+    V value;
     int nodeLevel;
 
-    kType GetKey() const;
-    vType GetValue() const;
-    void SetValue(vType);
+public:
+    Node(K k, V v, int level) // 带参数的构造函数
+        : key(std::move(k)), value(std::move(v)), nodeLevel(level), forward(level + 1) {}
+    Node() = delete;   // 删除默认构造函数
+    ~Node() = default; // 默认析构函数
 
-    Node<kType, vType> **forward; // 用二维指针实现跳表的搜索
+    K GetKey() const { return key; }
+    V GetValue() const { return value; }
+    void SetValue(V v) { value = std::move(v); } // 支持移动语义
+
+    std::vector<std::shared_ptr<Node<K, V>>> forward; // 用于实现搜索跳表的forward指针，指向各层的下一个节点
 };
-
-
-template <typename kType, typename vType>
-Node<kType, vType>::Node(const kType k, const vType v, int level)
-{
-    this->key = k;
-    this->value = v;
-    this->nodeLevel = level;
-    this->forward = new Node<kType, vType> *[level + 1];                  // level从0算起
-    memset(this->forward, 0, sizeof(Node<kType, vType> *) * (level + 1)); // 将所有指针初始化
-}
-
-template <typename kType, typename vType>
-Node<kType, vType>::~Node()
-{
-    delete[] forward;
-}
-
-template <typename kType, typename vType>
-kType Node<kType, vType>::GetKey() const
-{
-    return key;
-}
-
-template <typename kType, typename vType>
-vType Node<kType, vType>::GetValue() const
-{
-    return value;
-}
-
-template <typename kType, typename vType>
-void Node<kType, vType>::SetValue(vType v)
-{
-    this->value = v;
-}
-

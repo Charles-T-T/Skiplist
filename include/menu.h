@@ -5,26 +5,26 @@
 int LegalChoice(std::string choice, int low, int high);
 int MenuChoose();
 
-template <typename kType, typename vType>
-void Insert(Skiplist<kType, vType> &sl);
+template <typename K, typename V>
+void Insert(Skiplist<K, V> &sl);
 
-template <typename kType, typename vType>
-void Delete(Skiplist<kType, vType> &sl);
+template <typename K, typename V>
+void Delete(Skiplist<K, V> &sl);
 
-template <typename kType, typename vType>
-void Search(Skiplist<kType, vType> &sl);
+template <typename K, typename V>
+void Search(Skiplist<K, V> &sl);
 
-template <typename kType, typename vType>
-void Display(Skiplist<kType, vType> &sl);
+template <typename K, typename V>
+void Display(Skiplist<K, V> &sl);
 
-template <typename kType, typename vType>
-void InsertSet(Skiplist<kType, vType> &sl);
+template <typename K, typename V>
+void InsertSet(Skiplist<K, V> &sl);
 
-template <typename kType, typename vType>
-void DumpFile(Skiplist<kType, vType> &sl);
+template <typename K, typename V>
+void DumpFile(Skiplist<K, V> &sl);
 
-template <typename kType, typename vType>
-void LoadFile(Skiplist<kType, vType> &sl);
+template <typename K, typename V>
+void LoadFile(Skiplist<K, V> &sl);
 
 // 检测输入值是否为整数
 bool IsInt(std::string input)
@@ -57,7 +57,7 @@ int MenuChoose(){
     std::cout << "            MENU             " << std::endl;
     std::cout << "-----------------------------" << std::endl;
     std::cout << "- ATTENTION: " << std::endl;
-    std::cout << "- in this demo, please use" << std::endl;
+    std::cout << "- this demo supposes" << std::endl;
     std::cout << "- 'int' as key " << std::endl;
     std::cout << "- 'string' as value" << std::endl;
     std::cout << "-----------------------------" << std::endl;
@@ -77,8 +77,8 @@ int MenuChoose(){
     return LegalChoice(choice, 0, 7);
 }
 
-template <typename kType, typename vType>
-void Insert(Skiplist<kType, vType> &sl)
+template <typename K, typename V>
+void Insert(Skiplist<K, V> &sl)
 {
     int key;
     std::string value, input;
@@ -100,8 +100,8 @@ void Insert(Skiplist<kType, vType> &sl)
         std::cout << "The key has existed, value updating success!" << std::endl;
 }
 
-template <typename kType, typename vType>
-void Delete(Skiplist<kType, vType> &sl)
+template <typename K, typename V>
+void Delete(Skiplist<K, V> &sl)
 {
     std::string input;
     std::cout << "please input the key to be deleted: ";
@@ -110,8 +110,8 @@ void Delete(Skiplist<kType, vType> &sl)
     std::cout << "Delete Success!" << std::endl;
 }
 
-template <typename kType, typename vType>
-void Search(Skiplist<kType, vType> &sl)
+template <typename K, typename V>
+void Search(Skiplist<K, V> &sl)
 {
     std::string input;
     std::cout << "please input the key to be searched: ";
@@ -123,13 +123,13 @@ void Search(Skiplist<kType, vType> &sl)
         std::cout << "Search Fail!" << std::endl;
 }
 
-template <typename kType, typename vType>
-void Display(Skiplist<kType, vType> &sl){
+template <typename K, typename V>
+void Display(Skiplist<K, V> &sl){
     sl.DisplayList();
 }
 
-template <typename kType, typename vType>
-void InsertSet(Skiplist<kType, vType> &sl){
+template <typename K, typename V>
+void InsertSet(Skiplist<K, V> &sl){
     for (int i = 0; i < 50; i++)
     {
         std::cout << "insert node[" << i << "]" << std::endl;
@@ -139,12 +139,12 @@ void InsertSet(Skiplist<kType, vType> &sl){
     std::cout << "Insert over!" << std::endl;
 }
 
-template <typename kType, typename vType>
-void DumpFile(Skiplist<kType, vType> &sl){
+template <typename K, typename V>
+void DumpFile(Skiplist<K, V> &sl){
     sl.DumpFile();
 }
 
-template <typename kType, typename vType>
-void LoadFile(Skiplist<kType, vType> &sl){
+template <typename K, typename V>
+void LoadFile(Skiplist<K, V> &sl){
     sl.LoadFile();
 }

@@ -3,7 +3,8 @@
 
 int main()
 {
-    Skiplist<int, std::string> sl(16);
+    Skiplist<int, std::string> skiplist(16);
+    skiplist.SetStressTest(0);
     while (1)
     {
         int choice = MenuChoose();
@@ -15,49 +16,49 @@ int main()
             break;
 
         case 1:
-            Insert(sl);
+            Insert(skiplist);
             std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 2:
-            Delete(sl);
+            Delete(skiplist);
             std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 3:
-            Search(sl);
+            Search(skiplist);
             std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 4:
-            Display(sl);
+            Display(skiplist);
             std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 5:
-            InsertSet(sl);
+            InsertSet(skiplist);
             std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 6:
-            DumpFile(sl);
+            DumpFile(skiplist);
             std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
             break;
 
         case 7:
-            LoadFile(sl);
+            LoadFile(skiplist);
             std::cout << "*****************************" << std::endl;
             system("pause");
             system("cls");
