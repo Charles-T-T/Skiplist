@@ -20,7 +20,7 @@ template <typename K, typename V>
 class Skiplist
 {
 public:
-    Skiplist(int maxLevel); 
+    Skiplist(int maxLevel);
     std::shared_ptr<Node<K, V>> CreateNode(K key, V value, int level);
     int GetRandLevel();
     int InsertNode(K key, V value);
@@ -33,12 +33,12 @@ public:
     void SetStressTest(int i) { STRESS_TEST = i; }
 
 private:
-    int _maxLevel; // 跳表运行增长到的最大层数
-    int _listLevel; // 跳表当前具有的层数
-    int _elemCount; // 跳表中所有元素的数量
+    int _maxLevel;                       // 跳表运行增长到的最大层数
+    int _listLevel;                      // 跳表当前具有的层数
+    int _elemCount;                      // 跳表中所有元素的数量
     std::shared_ptr<Node<K, V>> _header; // 跳表头节点
-    std::ofstream _fileWriter; // 文件写入器
-    std::ifstream _fileReader; // 文件读取器
+    std::ofstream _fileWriter;           // 文件写入器
+    std::ifstream _fileReader;           // 文件读取器
     std::mutex _mutex;
     int STRESS_TEST = 1;
 
@@ -80,10 +80,10 @@ bool Skiplist<K, V>::SearchNode(K key)
     for (int i = _listLevel; i >= 0; i--)
     {
         // 从顶层往下查
-        while (current->forward[i] && current->forward[i]->GetKey() < key)
-            current = current->forward[i];
+        while (current->_forward[i] && current->_forward[i]->GetKey() < key)
+            current = current->_forward[i];
     }
-    current = current->forward[0]; // 在底层查找下一个值（目标）
+    current = current->_forward[0]; // 在底层查找下一个值（目标）
     if (current && current->GetKey() == key)
     {
         if (!STRESS_TEST)
@@ -108,8 +108,8 @@ int Skiplist<K, V>::InsertNode(K key, V value)
 
     for (int i = _listLevel; i >= 0; i--)
     {
-        while (current->forward[i] && current->forward[i]->GetKey() < key)
-            current = current->forward[i];
+        while (current->_forward[i] && current->_forward[i]->GetKey() < key)
+            current = current->_forward[i];
         update[i] = current;
     }
 
@@ -118,7 +118,7 @@ int Skiplist<K, V>::InsertNode(K key, V value)
      * 若存在：更新其value，返回0
      * 若不存在：插入新节点，返回1
      */
-    current = current->forward[0];
+    current = current->_forward[0];
     if (current && current->GetKey() == key)
     {
         current->SetValue(value);
@@ -138,8 +138,8 @@ int Skiplist<K, V>::InsertNode(K key, V value)
     auto newNode = CreateNode(key, value, randLevel);
     for (int i = 0; i <= randLevel; i++)
     {
-        newNode->forward[i] = std::move(update[i]->forward[i]);
-        update[i]->forward[i] = newNode;
+        newNode->_forward[i] = std::move(update[i]->_forward[i]);
+        update[i]->_forward[i] = newNode;
     }
 
     _elemCount++;
@@ -155,23 +155,23 @@ void Skiplist<K, V>::DeleteNode(K key)
     // 从高层向下搜索每层待删除的节点
     for (int i = _listLevel; i >= 0; i--)
     {
-        while (current->forward[i] && current->forward[i]->GetKey() < key)
-            current = current->forward[i];
+        while (current->_forward[i] && current->_forward[i]->GetKey() < key)
+            current = current->_forward[i];
         update[i] = current; // 记录待删除节点的前驱
     }
 
-    current = current->forward[0];
+    current = current->_forward[0];
     if (current && current->GetKey() == key)
     {
         // 从高层向下逐层删除节点
         for (int i = _listLevel; i >= 0; i--)
         {
-            if (update[i]->forward[i] != current)
+            if (update[i]->_forward[i] != current)
                 continue;
-            update[i]->forward[i] = std::move(current->forward[i]);
+            update[i]->_forward[i] = std::move(current->_forward[i]);
         }
         // 调整跳表的当前高度
-        while (_listLevel > 0 && !_header->forward[_listLevel])
+        while (_listLevel > 0 && !_header->_forward[_listLevel])
             _listLevel--;
 
         _elemCount--;
@@ -185,12 +185,12 @@ void Skiplist<K, V>::DisplayList()
     std::cout << "------------------------------" << std::endl;
     for (int i = _listLevel; i >= 0; i--)
     {
-        auto curNode = _header->forward[i];
+        auto curNode = _header->_forward[i];
         printf("Level[%d]: ", i);
         while (curNode)
         {
             std::cout << "<" << curNode->GetKey() << ":" << curNode->GetValue() << "> ";
-            curNode = curNode->forward[i];
+            curNode = curNode->_forward[i];
         }
         std::cout << std::endl;
     }
@@ -208,11 +208,11 @@ void Skiplist<K, V>::DumpFile()
         _fileWriter.open(writePath);
     }
     // 遍历底层节点并写入文件
-    auto node = _header->forward[0];
+    auto node = _header->_forward[0];
     while (node)
     {
         _fileWriter << node->GetKey() << ":" << node->GetValue() << "\n";
-        node = node->forward[0];
+        node = node->_forward[0];
     }
     _fileWriter.flush(); // 刷新缓冲区确保数据全部写入
     _fileWriter.close(); // 关闭文件
@@ -232,7 +232,8 @@ void Skiplist<K, V>::GetKVfromStr(const std::string &str, K &key, V &value, int 
 
     std::string strKey = str.substr(0, str.find(':'));
     std::string strValue = str.substr(str.find(':') + 1);
-    if (strKey.empty() || strValue.empty()){
+    if (strKey.empty() || strValue.empty())
+    {
         valid = 0;
         return;
     }
