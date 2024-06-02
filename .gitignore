@@ -1,5 +1,8 @@
 .vscode/
 script/
 build/
+bin/
 
 *.exe
+*.txt
+!sample_res.txt
