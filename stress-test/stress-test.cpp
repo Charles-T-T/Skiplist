@@ -5,7 +5,7 @@
 #include <random>
 #include <iostream>
 
-constexpr int THREAD_COUNT = 8;     // 支持的线程数量
+constexpr int THREAD_COUNT = 1;     // 支持的线程数量
 constexpr int TEST_COUNT = 1000000; // 测试用例的数量
 constexpr int MAX_LEVEL = 20;       // 跳表可支持的最大层数
 constexpr int MULTI_INSERT = 0;     // 是否采用多线程插入跳表
@@ -55,7 +55,7 @@ int main()
     // 插入节点压力测试
     {
         /**
-         * 测试发现多线程下，插入压测的QPS变化很小、甚至有所减小
+         * 测试发现多线程下，插入压测的IPS变化很小、甚至有所减小
          * 原因应该是对同一个跳表频繁操作导致锁对性能的限制较大
          * 故此处选择不采用多线程进行测试
          */
