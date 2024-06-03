@@ -2,7 +2,7 @@
 cd bin
 
 if [[ " $* " == *" -t "* ]]; then
-    ./stress-test
+    ./stress_test
 else
     ./menu
 fi
