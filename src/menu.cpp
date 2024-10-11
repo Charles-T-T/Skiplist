@@ -16,50 +16,50 @@ int main() {
       case 1:
         Insert(skiplist);
         std::cout << "*****************************" << std::endl;
-        system("pause");
-        system("cls");
+        pauseScreen();
+        clearScreen();
         break;
 
       case 2:
         Delete(skiplist);
         std::cout << "*****************************" << std::endl;
-        system("pause");
-        system("cls");
+        pauseScreen();
+        clearScreen();
         break;
 
       case 3:
         Search(skiplist);
         std::cout << "*****************************" << std::endl;
-        system("pause");
-        system("cls");
+        pauseScreen();
+        clearScreen();
         break;
 
       case 4:
         Display(skiplist);
         std::cout << "*****************************" << std::endl;
-        system("pause");
-        system("cls");
+        pauseScreen();
+        clearScreen();
         break;
 
       case 5:
-        InsertSet(skiplist);
+        InsertRandomSet(skiplist);
         std::cout << "*****************************" << std::endl;
-        system("pause");
-        system("cls");
+        pauseScreen();
+        clearScreen();
         break;
 
       case 6:
         DumpFile(skiplist);
         std::cout << "*****************************" << std::endl;
-        system("pause");
-        system("cls");
+        pauseScreen();
+        clearScreen();
         break;
 
       case 7:
         LoadFile(skiplist);
         std::cout << "*****************************" << std::endl;
-        system("pause");
-        system("cls");
+        pauseScreen();
+        clearScreen();
         break;
     }
   }

@@ -1,9 +1,15 @@
 #pragma once
 
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+
 #include "skiplist.h"
 
 int LegalChoice(std::string choice, int low, int high);
 int MenuChoose();
+void clearScreen();
+void pauseScreen();
 
 template <typename K, typename V>
 void Insert(Skiplist<K, V> &sl);
@@ -18,7 +24,7 @@ template <typename K, typename V>
 void Display(Skiplist<K, V> &sl);
 
 template <typename K, typename V>
-void InsertSet(Skiplist<K, V> &sl);
+void InsertRandomSet(Skiplist<K, V> &sl);
 
 template <typename K, typename V>
 void DumpFile(Skiplist<K, V> &sl);
@@ -36,6 +42,7 @@ inline bool IsInt(std::string input) {
     }
   return true;
 }
+
 // 检查输入是否合法
 inline int LegalChoice(std::string choice, int low, int high) {
   while (!IsInt(choice) || stoi(choice) < low || stoi(choice) > high) {
@@ -45,9 +52,27 @@ inline int LegalChoice(std::string choice, int low, int high) {
   return stoi(choice);
 }
 
-inline int MenuChoose() {
+// 清屏
+inline void clearScreen() {
+#ifdef _WIN32
   system("cls");
+#else
+  system("clear");
+#endif
+}
 
+// 暂停
+inline void pauseScreen() {
+#ifdef _WIN32
+  system("pause");
+#else
+  std::cout << "Press Enter to continue..." << std::endl;
+  std::cin.get();
+#endif
+}
+
+inline int MenuChoose() {
+  clearScreen();
   std::cout << "-----------------------------" << std::endl;
   std::cout << "            MENU             " << std::endl;
   std::cout << "-----------------------------" << std::endl;
@@ -60,7 +85,7 @@ inline int MenuChoose() {
   std::cout << "2. Delete" << std::endl;
   std::cout << "3. Search" << std::endl;
   std::cout << "4. Display" << std::endl;
-  std::cout << "5. Insert sample KV set" << std::endl;
+  std::cout << "5. Insert random KV set" << std::endl;
   std::cout << "6. Dump file" << std::endl;
   std::cout << "7. Load file" << std::endl;
   std::cout << "0. Exit" << std::endl;
@@ -121,12 +146,27 @@ void Display(Skiplist<K, V> &sl) {
 }
 
 template <typename K, typename V>
-void InsertSet(Skiplist<K, V> &sl) {
-  for (int i = 0; i < 50; i++) {
-    std::cout << "insert node[" << i << "]" << std::endl;
-    std::string str = "msg" + std::to_string(i);
-    sl.InsertNode(i, str);
+void InsertRandomSet(Skiplist<K, V> &sl) {
+  // 随机生成50对kv
+  std::mt19937 rng(std::random_device{}());
+  std::uniform_int_distribution<int> disInt(0, 10000);    // 随机生成int
+  std::uniform_int_distribution<char> disChar('a', 'z');  // 随机生成字符
+
+  for (int i = 0; i < 50; ++i) {
+    // 随机生成kv
+    int rKey = disInt(rng);
+    std::string rVal;
+    for (int j = 0; j < 5; ++j) {
+      rVal += disChar(rng);
+    }
+    sl.InsertNode(rKey, rVal);
+    printf("insert node[%d]\n", i);
   }
+  // for (int i = 0; i < 50; i++) {
+  //   std::cout << "insert node[" << i << "]" << std::endl;
+  //   std::string str = "msg" + std::to_string(i);
+  //   sl.InsertNode(i, str);
+  // }
   std::cout << "Insert over!" << std::endl;
 }
 
