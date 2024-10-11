@@ -31,15 +31,21 @@
 
 # 运行和测试
 
-Windows下，编译运行：
+Windows下：
 
 ```sh
-bash ./build.sh    // 编译
-bash ./run.sh      // 运行menu.exe，手动操作跳表
-bash ./run.sh -t   // 运行stress_test.exe，执行压力测试
+./build.bat    // 编译
+./run.bat      // 运行menu.exe，手动操作跳表
+./run.bat -t   // 运行stress_test.exe，执行压力测试
 ```
 
-Linux下，需去掉build.sh中的 `-G "MinGW Makefiles"` 参数，然后不加 `bash` 运行上述指令即可。
+Linux下：
+
+```sh
+./build.sh    // 编译
+./run.sh      // 运行menu.exe，手动操作跳表
+./run.sh -t   // 运行stress_test.exe，执行压力测试
+```
 
 # 主要接口
 
