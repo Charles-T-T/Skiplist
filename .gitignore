@@ -1,8 +1,17 @@
 .vscode/
+
 script/
+
 build/
+
 bin/
 
+res/
+
+.cache/
+
 *.exe
+
 *.txt
+
 !sample_res.txt

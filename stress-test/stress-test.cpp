@@ -5,7 +5,7 @@
 #include <random>
 #include <iostream>
 
-constexpr int THREAD_COUNT = 1;     // 支持的线程数量
+constexpr int THREAD_COUNT = 4;     // 支持的线程数量
 constexpr int TEST_COUNT = 1000000; // 测试用例的数量
 constexpr int MAX_LEVEL = 20;       // 跳表可支持的最大层数
 constexpr int MULTI_INSERT = 0;     // 是否采用多线程插入跳表
